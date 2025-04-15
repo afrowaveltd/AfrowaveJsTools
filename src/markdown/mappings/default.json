@@ -1,0 +1,14 @@
+[
+    { "mdStart": "# ", "htmlElement": "h1" },
+    { "mdStart": "## ", "htmlElement": "h2" },
+    { "mdStart": "### ", "htmlElement": "h3" },
+    { "mdStart": "#### ", "htmlElement": "h4" },
+    { "mdStart": "##### ", "htmlElement": "h5" },
+    { "mdStart": "###### ", "htmlElement": "h6" },
+    { "mdStart": "> ", "htmlElement": "blockquote" },
+    { "mdStart": "- ", "htmlElement": "li", "wrapWith": "ul" },
+    { "mdStart": "* ", "htmlElement": "li", "wrapWith": "ul" },
+    { "mdStart": "+ ", "htmlElement": "li", "wrapWith": "ul" },
+    { "mdStart": "1. ", "htmlElement": "li", "wrapWith": "ol" },
+    { "mdStart": "```", "htmlElement": "pre", "wrapWith": "codeblock", "langSupport": true }
+  ]

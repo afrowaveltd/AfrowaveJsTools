@@ -7,7 +7,7 @@ It aims to be simple enough for beginners, yet powerful and extensible for advan
 
 ## 🧰 Modules Overview
 
-### 📆 `src/api/apiCore.js`
+### 📦 `src/api/apiCore.js`
 
 #### ✅ `Result`
 A simple class representing the result of an API call.
@@ -95,7 +95,7 @@ Modular input validators for common needs:
 
 ---
 
-### 🕒 `src/utils/dateUtils.js`
+### 🕓 `src/utils/dateUtils.js`
 
 Date formatting and SQL-compatible output:
 
@@ -108,14 +108,48 @@ parseFlexibleDate(input)        // → handles common variants
 
 ---
 
-## 🥪 Testing Playground
+### 🍪 `src/storage/cookies.js`
+
+Cookie utilities:
+
+```js
+setCookie(name, value, days?)
+getCookie(name)
+```
+
+---
+
+### 💡 `src/utils/helpers.js`
+
+General-purpose utility functions:
+
+```js
+debounce(fn, onError?, delay?)
+```
+
+---
+
+### 🧱 `src/utils/dom.js`
+
+Utilities for rendering messages and animations in the DOM:
+
+```js
+logToHtml(message)
+escapeHTML(text)
+showLogInElement(message, elementId?, speed?)
+typewriter(elementId, html, speed?)
+```
+
+---
+
+## 🧪 Testing Playground
 
 Located at `/test/index.html`.  
 Allows you to run validators and utilities in a simple browser environment with real input fields.
 
 ---
 
-## 📁 Planned Structure
+## 📁 Project Structure
 
 ```
 src/
@@ -127,13 +161,15 @@ src/
 ├── utils/
 │   ├── validators.js
 │   ├── dateUtils.js
+│   ├── dom.js
+│   ├── helpers.js
+├── storage/
+│   ├── localStorage.js
+│   ├── cookies.js
 ├── markdown/         # (planned)
 │   ├── editor.js     # Markdown editor class (code/wysiwyg/split)
 │   ├── parser.js     # Markdown ↔ HTML
 │   ├── sanitizer.js  # HTML tag safety
-├── storage/
-│   ├── localStorage.js
-│   ├── cookies.js    # (planned)
 test/
 └── index.html
 ```
@@ -146,6 +182,7 @@ test/
 - Localization fallback + dynamic dictionary loading (LibreTranslate or custom API)
 - Markdown editor with local saving and customizable UI
 - Easy plugin system for extending tools
+- Custom prompt/modal system for friendly UI
 
 ---
 

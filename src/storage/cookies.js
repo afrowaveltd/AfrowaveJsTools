@@ -13,19 +13,16 @@ export function getCookie(name) {
 }
 
 /**
- * Set a cookie with optional days until expiration.
- * @param {string} name
- * @param {string} value
- * @param {number} [days]
+ * Sets a cookie with a specified name, value, and expiration period.
+ * @param {string} name - The name of the cookie.
+ * @param {string} value - The value to store in the cookie.
+ * @param {number} [expirationDays=36500] - Number of days before expiration (default: 100 years).
  */
-export function setCookie(name, value, days) {
-    let expires = "";
-    if (days) {
-        const date = new Date();
-        date.setTime(date.getTime() + (days * 864e5));
-        expires = "; expires=" + date.toUTCString();
-    }
-    document.cookie = `${name}=${value || ""}${expires}; path=/`;
+export function setCookie(name, value, expirationDays = 36500) {
+	const d = new Date();
+	d.setTime(d.getTime() + (expirationDays * 24 * 60 * 60 * 1000));
+	const expires = `expires=${d.toUTCString()}`;
+	document.cookie = `${name}=${encodeURIComponent(value)};${expires};path=/`;
 }
 
 /**
