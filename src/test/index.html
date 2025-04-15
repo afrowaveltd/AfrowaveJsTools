@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Afrowave JS Playground</title>
+	<script type="module">
+		import * as Validators from '../src/utils/validators.js';
+		import * as Dates from '../src/utils/dateUtils.js';
+
+		window.addEventListener('DOMContentLoaded', () => {
+			const out = document.getElementById('output');
+
+			document.getElementById('run-tests').addEventListener('click', () => {
+				const email = document.getElementById('email').value;
+				const phone = document.getElementById('phone').value;
+				const url = document.getElementById('url').value;
+				const date = document.getElementById('date').value;
+
+				const results = [
+					`Email valid: ${Validators.isEmail(email)}`,
+					`Phone valid: ${Validators.isPhoneNumber(phone)}`,
+					`URL valid: ${Validators.isURL(url)}`,
+					`ISO date valid: ${Validators.isISODate(date)}`,
+					`Date valid: ${Validators.isDate(date)}`,
+					`To SQL Date: ${Dates.toSqlDate(date)}`,
+					`To SQL DateTime: ${Dates.toSqlDateTime(date)}`,
+					`To Local (CS): ${Dates.fromIsoToLocale(date, 'cs-CZ')}`
+				];
+
+				out.textContent = results.join('\n');
+			});
+		});
+	</script>
+</head>
+<body style="font-family: sans-serif; padding: 2em;">
+	<h1>Afrowave JS Validator Playground</h1>
+
+	<label>Email: <input type="text" id="email" /></label>
+	<br>
+	<br>
+	<label>Phone: <input type="text" id="phone" /></label>
+	<br>
+	<br>
+	<label>URL: <input type="text" id="url" /></label>
+	<br>
+	<br>
+	<label>Date: <input type="text" id="date" placeholder="2024-04-14" /></label>
+	<br>
+	<br>
+
+	<button id="run-tests">Run Tests</button>
+
+	<pre id="output" style="margin-top:1em; background:#f4f4f4; padding:1em;"></pre>
+</body>
+</html>

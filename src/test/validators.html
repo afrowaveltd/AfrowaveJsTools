@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Validator Tests</title>
+	<script type="module">
+		import {
+			isEmail, isURL, isFileType, isFileExtension, isNotEmpty, escapeHtml
+		} from '../src/utils/validators.js';
+
+		window.addEventListener('DOMContentLoaded', () => {
+			const emailInput = document.getElementById('email');
+			const urlInput = document.getElementById('url');
+			const fileInput = document.getElementById('file');
+			const output = document.getElementById('output');
+
+			document.getElementById('check').addEventListener('click', () => {
+				const results = [
+					`Valid Email: ${isEmail(emailInput.value)}`,
+					`Valid URL: ${isURL(urlInput.value)}`,
+					`Not Empty: ${isNotEmpty(emailInput.value)}`,
+					fileInput.files[0]
+						? `Valid File Type: ${isFileType(fileInput.files[0], ['image/jpeg', 'image/png'])}`
+						: 'No file selected',
+					`Escaped HTML: ${escapeHtml("<script>alert('hi')</script>")}`
+	];
+	output.innerText = results.join('\n');
+	});
+	});
+	</script>
+</head>
+<body>
+	<h1>Afrowave Validator Tester</h1>
+	<label>Email: <input id="email" type="text"></label>
+	<br>
+	<label>URL: <input id="url" type="text"></label>
+	<br>
+	<label>File: <input id="file" type="file" accept=".jpg,.png"></label>
+	<br>
+	<button id="check">Run Validation</button>
+	<pre id="output" style="margin-top:1em; background:#f0f0f0; padding:1em;"></pre>
+</body>
+</html>
