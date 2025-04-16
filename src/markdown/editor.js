@@ -69,38 +69,49 @@ export class MarkdownEditor {
     }
   }
   renderToolbar() {
+    if (!this.toolbarEl) return;
+  
+    this.toolbarEl.className = "toolbar toolbar-group aMD-toolbar aMD-toolbar-group";
     this.toolbarEl.innerHTML = `
-			<div class="btn-group me-2" role="group">
-				<button class="btn btn-sm btn-outline-secondary" data-action="bold" title="Bold"><i class="bi bi-type-bold"></i></button>
-				<button class="btn btn-sm btn-outline-secondary" data-action="italic" title="Italic"><i class="bi bi-type-italic"></i></button>
-				<button class="btn btn-sm btn-outline-secondary" data-action="code" title="Code"><i class="bi bi-code"></i></button>
-				<button class="btn btn-sm btn-outline-secondary" data-action="heading" title="Heading"><i class="bi bi-type-h1"></i></button>
-				<button class="btn btn-sm btn-outline-secondary" data-action="ul" title="Unordered List"><i class="bi bi-list-ul"></i></button>
-				<button class="btn btn-sm btn-outline-secondary" data-action="ol" title="Ordered List"><i class="bi bi-list-ol"></i></button>
-				<button class="btn btn-sm btn-outline-secondary" data-action="table" title="Table"><i class="bi bi-table"></i></button>
-				<button class="btn btn-sm btn-outline-secondary" data-action="hr" title="Horizontal Rule"><i class="bi bi-dash-lg"></i></button>
-				<button class="btn btn-sm btn-outline-secondary" data-action="download-md" title="Download MD"><i class="bi bi-file-earmark-arrow-down"></i></button>
-				<button class="btn btn-sm btn-outline-secondary" data-action="download-html" title="Download HTML"><i class="bi bi-filetype-html"></i></button>
-				<button class="btn btn-sm btn-outline-secondary" data-action="toggle-preview" title="Toggle Preview"><i class="bi bi-eye"></i></button>
-			</div>`;
-
-    this.toolbarEl.querySelectorAll("button[data-action]").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
+      <button class="btn btn-sm btn-outline-secondary aMD-btn aMD-btn-sm" data-action="bold" title="Bold">
+        <i class="bi bi-type-bold"></i>
+      </button>
+      <button class="btn btn-sm btn-outline-secondary aMD-btn aMD-btn-sm" data-action="italic" title="Italic">
+        <i class="bi bi-type-italic"></i>
+      </button>
+      <button class="btn btn-sm btn-outline-secondary aMD-btn aMD-btn-sm" data-action="code" title="Code">
+        <i class="bi bi-code"></i>
+      </button>
+      <button class="btn btn-sm btn-outline-secondary aMD-btn aMD-btn-sm" data-action="heading" title="Heading">
+        <i class="bi bi-type-h1"></i>
+      </button>
+      <div class="divider aMD-toolbar-divider"></div>
+      <button class="btn btn-sm btn-outline-secondary aMD-btn aMD-btn-sm" data-action="mode-code" title="Code Mode">
+        <i class="bi bi-code-slash"></i>
+      </button>
+      <button class="btn btn-sm btn-outline-secondary aMD-btn aMD-btn-sm" data-action="mode-wysiwyg" title="WYSIWYG Mode">
+        <i class="bi bi-layout-text-window-reverse"></i>
+      </button>
+      <button class="btn btn-sm btn-outline-secondary aMD-btn aMD-btn-sm" data-action="mode-split" title="Split Mode">
+        <i class="bi bi-columns-gap"></i>
+      </button>
+    `;
+  
+    this.toolbarEl.querySelectorAll('button[data-action]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
         e.preventDefault();
         const action = btn.dataset.action;
-        if (action.startsWith("download")) {
-          this.downloadFile(action === "download-html" ? "html" : "md");
-        } else {
-          this.applyFormat(action);
-        }
-        if (action === "toggle-preview") {
-          this.togglePreviewVisibility();
+  
+        if (action.startsWith("mode-")) {
+          const mode = action.replace("mode-", "");
+          this.updateVisibility(mode);
         } else {
           this.applyFormat(action);
         }
       });
     });
   }
+  
 
   getMarkdown() {
     return this.value;
@@ -231,6 +242,7 @@ export class MarkdownEditor {
       const html = await convertMarkdown(this.value);
       this.previewEl.innerHTML = html;
     }
+    if (window.Prism) Prism.highlightAll();
   }
 
   destroy() {

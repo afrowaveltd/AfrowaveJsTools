@@ -16,58 +16,27 @@ A simple class representing the result of an API call.
 new Result(success, data, error)
 ```
 
-- `success` – Boolean
-- `data` – Response payload (optional)
-- `error` – `{ code, message }` in case of failure
-
 #### ✅ `apiRequest(options)`
 Universal API wrapper for `fetch`.
 
 ```js
-await apiRequest({
-  url,
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
-  data,              // Optional payload
-  headers,           // Custom headers
-  token,             // Optional Bearer token
-  useFormData,       // Support for form-based uploads
-  formName,          // DOM form name
-  responseType: 'json' | 'text' | 'html'
-});
+await apiRequest({ url, method, data?, headers?, token?, ... });
 ```
 
 ---
 
 ### 🚀 `src/api/apiHelpers.js`
 
-Helper functions built on top of `apiRequest`:
-
-```js
-fetchData(url, token?)
-fetchText(url, token?)
-fetchHTML(url, token?)
-fetchDataWithBody(url, data, method?, token?)
-fetchDataWithParamsAndHeaders(url, params, headers, token?)
-postDataWithParams(url, data, token?)
-postDataWithParamsAndHeaders(url, data, headers, token?)
-deleteData(url, token?)
-deleteDataWithParamsAndHeaders(url, params, headers, token?)
-updateData(url, data, token?)
-updateDataWithParamsAndHeaders(url, data, headers, token?)
-```
+Helper functions for common request types:  
+`fetchData()`, `postDataWithParams()`, `updateDataWithParamsAndHeaders()` and more.
 
 ---
 
 ### 🌍 `src/i18n/localize.js`
 
 #### `localize(text, language?)`
-
-Translates a given string using a lightweight API call.
-Falls back to cookies or `en` as default language.
-
-```js
-const translated = await localize("Welcome");
-```
+Translates a string using a lightweight API (LibreTranslate or custom).  
+Defaults to `en` and falls back to browser cookies.
 
 ---
 
@@ -75,42 +44,27 @@ const translated = await localize("Welcome");
 
 Modular input validators for common needs:
 
-- **General**
-  - `isEmail(value)`
-  - `isURL(value)`
-  - `isPhoneNumber(value)` – International format (`+123...`)
-  - `isNotEmpty(value)`
-  - `isLengthValid(value, min, max?)`
-- **Files**
-  - `isFileType(file, allowedTypes)`
-  - `isFileExtension(filename, allowedExtensions)`
-- **Dates**
-  - `isDate(value)` – Valid JS-parsable date
-  - `isISODate(value)` – Matches `YYYY-MM-DD`
-- **Security**
-  - `escapeHtml(string)`
-  - `isSafeString(value)` – Filters scripts/injection
-  - `hasSpecialCharacter(value)` – Password complexity
-  - `hasRepeatedCharacters(value, maxRepeat)` – E.g. no `aaa`
+- **General**: `isEmail`, `isURL`, `isPhoneNumber`, `isNotEmpty`, `isLengthValid`
+- **Files**: `isFileType`, `isFileExtension`
+- **Dates**: `isDate`, `isISODate`
+- **Security**: `escapeHtml`, `isSafeString`, `hasSpecialCharacter`, `hasRepeatedCharacters`
 
 ---
 
 ### 🕓 `src/utils/dateUtils.js`
 
-Date formatting and SQL-compatible output:
+Date helpers with SQL-friendly formats:
 
 ```js
 toSqlDate(date)                  // → 'YYYY-MM-DD'
 toSqlDateTime(date)             // → 'YYYY-MM-DD HH:mm:ss'
-fromIsoToLocale(iso, locale)    // → locale-formatted string
-parseFlexibleDate(input)        // → handles common variants
+fromIsoToLocale(iso, locale)    // → Localized format
+parseFlexibleDate(input)        // → Auto-detects variants
 ```
 
 ---
 
 ### 🍪 `src/storage/cookies.js`
-
-Cookie utilities:
 
 ```js
 setCookie(name, value, days?)
@@ -119,9 +73,18 @@ getCookie(name)
 
 ---
 
+### 💾 `src/storage/localStorage.js`
+
+```js
+setObject(key, value)
+getObject(key)
+```
+
+---
+
 ### 💡 `src/utils/helpers.js`
 
-General-purpose utility functions:
+General helpers:
 
 ```js
 debounce(fn, onError?, delay?)
@@ -131,7 +94,7 @@ debounce(fn, onError?, delay?)
 
 ### 🧱 `src/utils/dom.js`
 
-Utilities for rendering messages and animations in the DOM:
+Visual utility functions:
 
 ```js
 logToHtml(message)
@@ -142,10 +105,54 @@ typewriter(elementId, html, speed?)
 
 ---
 
+### ✍️ `src/markdown/editor.js`
+
+Fully-featured Markdown editor:
+
+- **Modes**: `code`, `wysiwyg`, `split`
+- **Toolbar**: Bold, Italic, Headings, Code, Horizontal rule
+- **Features**:
+  - Real-time HTML preview (streaming or static)
+  - Synchronization between modes
+  - Markdown ↔ HTML with full tag support
+  - Editable WYSIWYG (with Markdown-safe output)
+  - Configurable toolbar + themes (coming soon)
+  - Local saving with `localStorage`
+  - Toggle preview visibility
+
+---
+
+### 🔁 `src/markdown/converter.js`
+
+Converts Markdown → HTML.  
+Uses customizable mappings from JSON config with fallback support.
+
+---
+
+### ↩️ `src/markdown/htmlToMarkdown.js`
+
+Converts HTML → Markdown.  
+Supports:
+- Headings
+- Lists
+- Blockquotes
+- Inline/bold/italic/code
+- Code blocks (with language)
+- Horizontal rules
+- Links, images
+
+---
+
 ## 🧪 Testing Playground
 
 Located at `/test/index.html`.  
-Allows you to run validators and utilities in a simple browser environment with real input fields.
+Includes:
+
+- Live preview
+- Input/output testing
+- Toggle preview visibility
+- Split mode evaluation
+- Markdown editor demo
 
 ---
 
@@ -154,42 +161,32 @@ Allows you to run validators and utilities in a simple browser environment with 
 ```
 src/
 ├── api/
-│   ├── apiCore.js
-│   ├── apiHelpers.js
 ├── i18n/
-│   └── localize.js
-├── utils/
-│   ├── validators.js
-│   ├── dateUtils.js
-│   ├── dom.js
-│   ├── helpers.js
+├── markdown/
+│   ├── editor.js
+│   ├── converter.js
+│   ├── htmlToMarkdown.js
 ├── storage/
-│   ├── localStorage.js
-│   ├── cookies.js
-├── markdown/         # (planned)
-│   ├── editor.js     # Markdown editor class (code/wysiwyg/split)
-│   ├── parser.js     # Markdown ↔ HTML
-│   ├── sanitizer.js  # HTML tag safety
+├── utils/
 test/
-└── index.html
+├── index.html
+├── test.md
 ```
 
 ---
 
 ## ⚙️ Future Ideas
 
-- `config.json` support for editor and module-wide settings
-- Localization fallback + dynamic dictionary loading (LibreTranslate or custom API)
-- Markdown editor with local saving and customizable UI
-- Easy plugin system for extending tools
-- Custom prompt/modal system for friendly UI
+- Configurable themes (light/dark/custom)
+- Plugin support for editor (custom buttons, layouts)
+- Upload/save Markdown files
+- Integrate with Afrowave ID and AI tools
+- Live AI-assisted translation
+- Export to PDF/HTML from MD
 
 ---
 
 ## 📜 License
 
-MIT – Use freely, contribute openly 💚
-
----
-
+MIT – Use freely, contribute openly 💚  
 Made with ☕ and JavaScript for the Afrowave ecosystem.

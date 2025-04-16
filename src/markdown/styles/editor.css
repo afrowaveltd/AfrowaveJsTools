@@ -1,0 +1,63 @@
+/* === Afrowave Markdown Editor === */
+/* Používá kombinaci afrowave + aMD tříd */
+
+.toolbar.aMD-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 6px 8px;
+    transition: all 0.3s ease;
+    transform-origin: top;
+  }
+  
+  .toolbar-group.aMD-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .divider.aMD-toolbar-divider {
+    width: 1px;
+    height: 24px;
+    margin: 0 6px;
+    background: var(--border-color, #ccc);
+  }
+  
+  .btn.aMD-btn {
+    font-family: inherit;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .btn-sm.aMD-btn-sm {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+  }
+  
+  .preview.aMD-preview,
+  .md-preview.aMD-md-preview,
+  .output.aMD-output {
+    padding: 12px;
+    background-color: var(--editor-bg, inherit);
+    border: 1px solid var(--border-color, #ccc);
+    border-radius: 4px;
+  }
+  
+  .textarea.aMD-editor,
+  .editor.aMD-editor {
+    width: 100%;
+    font-family: monospace;
+    padding: 12px;
+    border-radius: 4px;
+    resize: vertical;
+    background-color: var(--editor-bg, inherit);
+    border: 1px solid var(--border-color, #ccc);
+  }
+  
+  .wysiwyg.aMD-wysiwyg,
+  .contenteditable.aMD-contenteditable {
+    font-family: inherit;
+    padding: 12px;
+    border: 1px solid var(--border-color, #ccc);
+    background-color: var(--editor-bg, inherit);
+  }
+  

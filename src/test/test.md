@@ -48,7 +48,8 @@ function greet(name) {
 ### Code block (C#)
 
 ```csharp
-public class Result {
+public class Result 
+{
     public bool Success { get; set; }
     public object Data { get; set; }
     public string Error { get; set; }
