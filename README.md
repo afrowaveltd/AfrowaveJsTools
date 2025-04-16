@@ -186,12 +186,12 @@ src/
 │   └── localStorage.js
 │
 ├── translate/
-│   └── [připravuje se – překladové pluginy]
+│   └── [To Do – translation plugins]
 │
 ├── test/
 │   ├── index.html
-│   ├── md-editor-demo.html      ← ✅ testování editoru
-│   ├── test.md                  ← ✅ testovací MD soubor
+│   ├── md-editor-demo.html      ← ✅ editor testing
+│   ├── test.md                  ← ✅ MD file for testing
 │   └── validators.html
 │
 ├── utils/
