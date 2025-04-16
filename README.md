@@ -161,16 +161,50 @@ Includes:
 ```
 src/
 ├── api/
+│   ├── api.js
+│   ├── apiCore.js
+│   └── apiHelpers.js
+│
 ├── i18n/
+│   └── localize.js
+│
 ├── markdown/
-│   ├── editor.js
+│   ├── mappings/
+│   │   ├── default.json
+│   │   └── user.json
+│   ├── styles/
+│   │   ├── custom.css
+│   │   └── editor.css
+│   ├── config.js
 │   ├── converter.js
+│   ├── editor.js
 │   ├── htmlToMarkdown.js
+│   └── parser.js
+│
 ├── storage/
+│   ├── cookies.js
+│   └── localStorage.js
+│
+├── translate/
+│   └── [připravuje se – překladové pluginy]
+│
+├── test/
+│   ├── index.html
+│   ├── md-editor-demo.html      ← ✅ testování editoru
+│   ├── test.md                  ← ✅ testovací MD soubor
+│   └── validators.html
+│
 ├── utils/
-test/
-├── index.html
-├── test.md
+│   ├── dateUtils.js
+│   ├── dom.js
+│   ├── helpers.js
+│   └── validators.js
+│
+├── README.md
+├── package.json
+├── package-lock.json
+└── .gitignore
+
 ```
 
 ---
