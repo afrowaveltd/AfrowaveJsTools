@@ -6,6 +6,7 @@
     { "mdStart": "##### ", "htmlElement": "h5" },
     { "mdStart": "###### ", "htmlElement": "h6" },
     { "mdStart": "> ", "htmlElement": "blockquote" },
+	 { "mdStart": "---", "htmlElement": "hr" },
     { "mdStart": "- ", "htmlElement": "li", "wrapWith": "ul" },
     { "mdStart": "* ", "htmlElement": "li", "wrapWith": "ul" },
     { "mdStart": "+ ", "htmlElement": "li", "wrapWith": "ul" },

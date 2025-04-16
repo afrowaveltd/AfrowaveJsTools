@@ -47,7 +47,7 @@
 		</div>
 	</div>
 
-	<textarea id="md-editor" placeholder="Type some Markdown..."></textarea>
+	<textarea id="md-editor" placeholder="Type some Markdown..." style="margin: 10px 0px"></textarea>
 	<div id="md-wysiwyg" contenteditable="true" style="display:none;"></div>
 	<div id="md-preview" class="preview"></div>
 
@@ -72,20 +72,8 @@
 		});
 
 		window.switchMode = async mode => {
-			window.editor.settings.mode = mode;
-
-			if (mode === 'wysiwyg') {
-				const html = await convertMarkdown(window.editor.getMarkdown());
-				window.editor.wysiwygEl.innerHTML = html;
-			} else if (mode === 'code') {
-				const md = await convertHtmlToMarkdown(window.editor.wysiwygEl.innerHTML);
-				window.editor.setMarkdown(md);
-				window.editor.editorEl.focus();
-				window.editor.editorEl.setSelectionRange(0, 0);
-			}
-
-			window.editor.updateVisibility();
-		};
+	await window.editor.updateVisibility(mode);
+};
 	</script>
 </body>
 </html>

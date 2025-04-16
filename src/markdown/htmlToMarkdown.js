@@ -1,75 +1,96 @@
 // src/markdown/htmlToMarkdown.js
 
-import { getCombinedMappings } from './config.js';
-
-const stripTags = html => html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '').replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '');
-
 export async function convertHtmlToMarkdown(html) {
-	let mappings;
-	try {
-		mappings = await getCombinedMappings();
-		if (!Array.isArray(mappings)) throw new Error('Invalid mappings');
-	} catch {
-		console.warn('[htmlToMarkdown] using fallback');
-		mappings = [
-			{ htmlElement: 'h1', mdStart: '# ' },
-			{ htmlElement: 'h2', mdStart: '## ' },
-			{ htmlElement: 'h3', mdStart: '### ' },
-			{ htmlElement: 'h4', mdStart: '#### ' },
-			{ htmlElement: 'h5', mdStart: '##### ' },
-			{ htmlElement: 'h6', mdStart: '###### ' },
-			{ htmlElement: 'blockquote', mdStart: '> ' },
-			{ htmlElement: 'li', mdStart: '- ' },
-			{ htmlElement: 'pre', mdStart: '```\n', mdEnd: '\n```' },
-			{ htmlElement: 'p', mdStart: '' },
-			{ htmlElement: 'strong', mdInline: '**' },
-			{ htmlElement: 'b', mdInline: '**' },
-			{ htmlElement: 'em', mdInline: '*' },
-			{ htmlElement: 'i', mdInline: '*' },
-			{ htmlElement: 'code', mdInline: '`' },
-			{ htmlElement: 'a', mdLink: true },
-			{ htmlElement: 'img', mdImage: true }
-		];
-	}
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = html;
 
-	html = stripTags(html);
-	const wrapper = document.createElement('div');
-	wrapper.innerHTML = html;
+  function parse(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return node.nodeValue;
+    }
 
-	let result = '';
+    if (node.nodeType !== Node.ELEMENT_NODE) {
+      return "";
+    }
 
-	const processNode = (node) => {
-		if (node.nodeType === Node.TEXT_NODE) return node.textContent.trim();
-		if (node.nodeType !== Node.ELEMENT_NODE) return '';
+    const tag = node.tagName.toLowerCase();
+    let content = Array.from(node.childNodes).map(parse).join("");
 
-		const tag = node.tagName.toLowerCase();
-		const map = mappings.find(m => m.htmlElement.toLowerCase() === tag);
-		let content = Array.from(node.childNodes).map(processNode).join('');
-		if (!map) return content;
+    switch (tag) {
+      case "strong":
+      case "b":
+        return `**${content}**`;
+      case "em":
+      case "i":
+        return `*${content}*`;
+      case "code":
+        return `\`${content}\``;
+      case "pre":
+        const codeNode = node.querySelector("code");
+        const langClass = codeNode?.getAttribute("class") || "";
+        const langMatch = langClass.match(/language-([\w-]+)/);
+        const lang = langMatch ? langMatch[1] : "";
+        const codeContent = codeNode ? parse(codeNode) : content;
+        return `\n\n\`\`\`${lang}\n${codeContent}\n\`\`\`\n\n`;
 
-		if (map.mdInline) {
-			return `${map.mdInline}${content}${map.mdInline}`;
-		}
+      case "h1":
+        return `# ${content}\n\n`;
+      case "h2":
+        return `## ${content}\n\n`;
+      case "h3":
+        return `### ${content}\n\n`;
+      case "h4":
+        return `#### ${content}\n\n`;
+      case "h5":
+        return `##### ${content}\n\n`;
+      case "h6":
+        return `###### ${content}\n\n`;
+      case "ul":
+        return (
+          content
+            .split(/\n+/)
+            .map((line) => (line ? `- ${line}` : ""))
+            .join("\n") + "\n\n"
+        );
+      case "ol":
+        let i = 1;
+        return (
+          content
+            .split(/\n+/)
+            .map((line) => (line ? `${i++}. ${line}` : ""))
+            .join("\n") + "\n\n"
+        );
+      case "li":
+        return `${content}\n`;
+      case "blockquote":
+        return (
+          content
+            .split("\n")
+            .map(function (line) {
+              return "> " + line;
+            })
+            .join("\n") + "\n\n"
+        );
 
-		if (map.mdLink && node.hasAttribute('href')) {
-			return `[${content}](${node.getAttribute('href')})`;
-		}
+      case "a":
+        return `[${content}](${node.getAttribute("href")})`;
+      case "img":
+        return `![${node.getAttribute("alt") || ""}](${node.getAttribute(
+          "src"
+        )})`;
+      case "br":
+        return "  \n";
+      case "hr":
+        return `---\n\n`;
+      case "p":
+        return `${content}\n\n`;
+      default:
+        return content;
+    }
+  }
 
-		if (map.mdImage && node.hasAttribute('src')) {
-			return `![${node.getAttribute('alt') || ''}](${node.getAttribute('src')})`;
-		}
-
-		if (tag === 'pre') {
-			return `${map.mdStart}${content}${map.mdEnd}`;
-		}
-
-		return `${map.mdStart}${content}`;
-	};
-
-	for (let child of wrapper.childNodes) {
-		const line = processNode(child);
-		if (line.trim()) result += line + '\n';
-	}
-
-	return result.trim();
+  let markdown = Array.from(tempDiv.childNodes).map(parse).join("").trim();
+  // Odstranit více než 2 prázdné řádky po sobě
+  markdown = markdown.replace(/\n{3,}/g, "\n\n");
+  return markdown;
 }
