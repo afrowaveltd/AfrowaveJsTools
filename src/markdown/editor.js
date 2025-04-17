@@ -5,6 +5,11 @@ import { getObject, setObject } from "../storage/localStorage.js";
 import { convertHtmlToMarkdown } from "./htmlToMarkdown.js";
 
 export class MarkdownEditor {
+  /**
+   * Initializes the MarkdownEditor class with provided configuration.
+   *
+   * @param {Object} options - Editor initialization options (element IDs, storage key, etc.)
+   */
   constructor(options = {}) {
     this.settings = {
       elementId: options.elementId || "md-editor",
@@ -27,7 +32,9 @@ export class MarkdownEditor {
     this.value = "";
     this.init();
   }
-
+  /**
+   * Initializes editor UI, loads saved content, sets up events and renders preview.
+   */
   init() {
     if (!this.editorEl) {
       throw new Error(
@@ -68,10 +75,15 @@ export class MarkdownEditor {
       this.render();
     }
   }
+  /**
+   * Renders the Markdown toolbar with formatting buttons and mode controls.
+   * Buttons trigger actions via dataset attributes.
+   */
   renderToolbar() {
     if (!this.toolbarEl) return;
-  
-    this.toolbarEl.className = "toolbar toolbar-group aMD-toolbar aMD-toolbar-group";
+
+    this.toolbarEl.className =
+      "toolbar toolbar-group aMD-toolbar aMD-toolbar-group";
     this.toolbarEl.innerHTML = `
       <button class="btn btn-sm btn-outline-secondary aMD-btn aMD-btn-sm" data-action="bold" title="Bold">
         <i class="bi bi-type-bold"></i>
@@ -96,12 +108,12 @@ export class MarkdownEditor {
         <i class="bi bi-columns-gap"></i>
       </button>
     `;
-  
-    this.toolbarEl.querySelectorAll('button[data-action]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+
+    this.toolbarEl.querySelectorAll("button[data-action]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
         e.preventDefault();
         const action = btn.dataset.action;
-  
+
         if (action.startsWith("mode-")) {
           const mode = action.replace("mode-", "");
           this.updateVisibility(mode);
@@ -111,19 +123,30 @@ export class MarkdownEditor {
       });
     });
   }
-  
-
+  /**
+   * Returns the current Markdown content from the editor.
+   *
+   * @returns {string} Current Markdown string.
+   */
   getMarkdown() {
     return this.value;
   }
-
+  /**
+   * Replaces the editor content with the provided Markdown text and optionally re-renders preview.
+   *
+   * @param {string} text - New Markdown content to set.
+   */
   setMarkdown(text) {
     this.value = text;
     this.editorEl.value = text;
     setObject(this.settings.storageKey, text);
     if (this.settings.autoRender) this.render();
   }
-
+  /**
+   * Applies a formatting rule (bold, italic, etc.) to selected text using Markdown syntax.
+   *
+   * @param {string} type - Type of formatting to apply.
+   */
   applyFormat(type) {
     const textarea = this.editorEl;
     const { selectionStart, selectionEnd, value, scrollTop, scrollLeft } =
@@ -230,7 +253,10 @@ export class MarkdownEditor {
     a.click();
     URL.revokeObjectURL(a.href);
   }
-
+  /**
+   * Renders Markdown preview area depending on rendering mode (stream or full).
+   * Uses internal converter or stream renderer.
+   */
   async render() {
     if (!this.previewEl) return;
     if (this.settings.streaming) {
@@ -244,23 +270,34 @@ export class MarkdownEditor {
     }
     if (window.Prism) Prism.highlightAll();
   }
-
+  /**
+   * Destroys editor instance, removes event listeners, and cleans up UI elements.
+   */
   destroy() {
     this.editorEl.removeEventListener("input", this.render);
     this.editorEl = null;
     this.previewEl = null;
     if (this.toolbarEl) this.toolbarEl.innerHTML = "";
   }
-
+  /**
+   * Loads previously saved Markdown draft from local storage, if available.
+   */
   loadFromStorage() {
     const content = getObject(this.settings.storageKey);
     if (content) this.setMarkdown(content);
   }
-
+  /**
+   * Saves the current Markdown content to local storage.
+   */
   saveToStorage() {
     setObject(this.settings.storageKey, this.getMarkdown());
   }
-
+  /**
+   * Dynamically updates the editor layout depending on active display mode:
+   * 'code', 'preview', or 'split'.
+   *
+   * @param {string} mode - Target display mode.
+   */
   async updateVisibility(mode = this.settings.mode) {
     const previousMode = this.settings.mode;
     this.settings.mode = mode;
@@ -280,7 +317,10 @@ export class MarkdownEditor {
     this.wysiwygEl.style.display =
       mode === "wysiwyg" || mode === "split" ? "block" : "none";
   }
-
+  /**
+   * Syncs the Markdown content depending on current mode.
+   * Converts from HTML to Markdown when switching from WYSIWYG.
+   */
   async syncCurrentContent() {
     const isVisible = (el) =>
       el && window.getComputedStyle(el).display !== "none";
@@ -294,7 +334,11 @@ export class MarkdownEditor {
 
     setObject(this.settings.storageKey, this.value);
   }
-
+  /**
+   * Toggles visibility of the preview pane.
+   *
+   * @param {boolean} visible - Whether to show or hide preview.
+   */
   togglePreviewVisibility(show = null) {
     if (!this.previewEl) return;
     const isVisible = this.previewEl.style.display !== "none";

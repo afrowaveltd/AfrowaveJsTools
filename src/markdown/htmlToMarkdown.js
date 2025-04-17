@@ -1,9 +1,21 @@
 // src/markdown/htmlToMarkdown.js
-
+/**
+ * Converts an HTML string into its Markdown representation.
+ * Handles supported HTML tags defined in the conversion logic.
+ *
+ * @param {string} html - The HTML string to convert.
+ * @returns {Promise<string>} A promise that resolves to the converted Markdown.
+ */
 export async function convertHtmlToMarkdown(html) {
   const tempDiv = document.createElement("div");
   tempDiv.innerHTML = html;
 
+  /**
+   * Recursively parses an HTML node and converts it into Markdown based on tag type.
+   *
+   * @param {Node} node - The DOM node to parse.
+   * @returns {string} Markdown representation of the node.
+   */
   function parse(node) {
     if (node.nodeType === Node.TEXT_NODE) {
       return node.nodeValue;

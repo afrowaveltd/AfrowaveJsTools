@@ -28,6 +28,15 @@ function parseInline(text) {
     .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>');
 }
 
+/**
+ * Converts a Markdown string to HTML by applying defined mappings.
+ * The mappings define how markdown tags (like `**bold**`) are transformed to HTML equivalents.
+ *
+ * @async
+ * @function
+ * @param {string} markdown - The Markdown source string to convert.
+ * @returns {Promise<string>} A promise that resolves to an HTML string.
+ */
 export async function convertMarkdown(markdown, options = {}) {
   let mappings;
   try {
@@ -114,6 +123,15 @@ export async function convertMarkdown(markdown, options = {}) {
   return output.trim();
 }
 
+/**
+ * Asynchronously converts Markdown to HTML and yields each line separately.
+ * This allows rendering large markdown files in chunks, line by line (e.g., for streaming preview).
+ *
+ * @async
+ * @generator
+ * @param {string} markdown - The Markdown content to convert and stream.
+ * @yields {string} One line of the converted HTML at a time.
+ */
 export async function* streamMarkdown(markdown, delay = 50) {
   let html = await convertMarkdown(markdown);
   const lines = html.split("\n");
